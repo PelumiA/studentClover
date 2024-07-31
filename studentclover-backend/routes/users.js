@@ -85,4 +85,19 @@ router.get('/all', async (req, res) => {
     }
 });
 
+// Get a random user
+router.get('/random', async (req, res) => {
+    try {
+        const count = await User.countDocuments();
+        const random = Math.floor(Math.random() * count);
+        const user = await User.findOne().skip(random);
+
+        res.status(200).json(user);
+    } catch (err) {
+        console.error('Error in /random:', err.message);
+        res.status(500).send('Server error');
+    }
+});
+
+
 module.exports = router;
