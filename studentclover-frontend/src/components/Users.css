@@ -1,0 +1,36 @@
+/* src/App.css or src/Users.css */
+
+.avatar {
+    width: 100px !important;
+    height: 100px !important;
+    border-radius: 10px !important;
+    object-fit: cover !important;
+    margin-right: 15px !important;
+    border: 1px solid #ddd !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+.user-card {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.filters {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.filters .form-group {
+    flex: 1;
+    margin-right: 10px;
+}
+
+.filters .form-group:last-child {
+    margin-right: 0;
+}
