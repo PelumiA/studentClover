@@ -1,9 +1,8 @@
 // models/User.js
 
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
 
-const UserSchema = new Schema({
+const UserSchema = new mongoose.Schema({
     email: {
         type: String,
         required: true,
@@ -13,8 +12,12 @@ const UserSchema = new Schema({
         type: String,
         required: true
     },
+    role: {
+        type: String,
+        enum: ['Student', 'Sponsor'],
+        required: true
+    },
     profile: {
-        email: String,
         name: String,
         school: String,
         typeOfSchool: String,
@@ -25,10 +28,15 @@ const UserSchema = new Schema({
         gender: String,
         profilePic: String
     },
-    subscriptionActive: {
-        type: Boolean,
-        default: true
-    }
+    acceptedUsers: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }],
+    rejectedUsers: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }]
 });
 
-module.exports = mongoose.model('User', UserSchema);
+const User = mongoose.model('User', UserSchema);
+module.exports = User;

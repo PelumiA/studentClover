@@ -1,30 +1,39 @@
 // src/components/LandingPage.js
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
+import { AuthContext } from '../AuthContext';
 import './LandingPage.css';
 
 const LandingPage = () => {
+    const { token, role } = useContext(AuthContext);
     const [user, setUser] = useState(null);
     const [message, setMessage] = useState('');
     const [rejectedUsers, setRejectedUsers] = useState([]);
     const [acceptedUsers, setAcceptedUsers] = useState([]);
 
     useEffect(() => {
+        fetchUserLists();
         fetchRandomUser();
-    }, []);
+    }, [token]);
 
-    const fetchRandomUser = async () => {
-        try {
-            const response = await axios.get('http://localhost:5000/api/users/random');
-            setUser(response.data);
-        } catch (error) {
-            console.error('Error fetching random user:', error);
+    const fetchUserLists = async () => {
+        if (role === 'Sponsor' && token) {
+            try {
+                const response = await axios.get('http://localhost:5000/api/users/profile', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                setAcceptedUsers(response.data.acceptedUsers || []);
+                setRejectedUsers(response.data.rejectedUsers || []);
+            } catch (error) {
+                console.error('Error fetching user lists:', error);
+            }
         }
     };
 
-    // This ensures that only unseen/new users are fetched
-    const fetchRandomUserNoRepeats = async () => {
+    const fetchRandomUser = async () => {
         try {
             const response = await axios.get('http://localhost:5000/api/users/random');
             const newUser = response.data;
@@ -40,14 +49,36 @@ const LandingPage = () => {
         }
     };
 
-    const handleSwipeRight = () => {
-        setAcceptedUsers([...acceptedUsers, user._id]);
+    const handleSwipeRight = async () => {
+        if (role === 'Sponsor' && token) {
+            try {
+                await axios.put(`http://localhost:5000/api/users/accept/${user._id}`, {}, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                setAcceptedUsers([...acceptedUsers, user._id]);
+            } catch (error) {
+                console.error('Error accepting user:', error);
+            }
+        }
         setMessage(`You accepted ${user.profile.name}`);
         fetchRandomUser();
     };
 
-    const handleSwipeLeft = () => {
-        setRejectedUsers([...rejectedUsers, user._id]);
+    const handleSwipeLeft = async () => {
+        if (role === 'Sponsor' && token) {
+            try {
+                await axios.put(`http://localhost:5000/api/users/reject/${user._id}`, {}, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                setRejectedUsers([...rejectedUsers, user._id]);
+            } catch (error) {
+                console.error('Error rejecting user:', error);
+            }
+        }
         setMessage(`You rejected ${user.profile.name}`);
         fetchRandomUser();
     };

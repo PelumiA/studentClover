@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import '../Users.css'; // Ensure you import the CSS if you have a separate CSS file for Users component
+import '../Users.css'; 
 
 const Users = () => {
     const [users, setUsers] = useState([]);
